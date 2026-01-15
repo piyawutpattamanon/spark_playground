@@ -25,14 +25,14 @@ def spark():
     - maxResultSize (1g): CRITICAL - Prevents accidental .collect() on large results.
     - adaptive.enabled: Spark automatically optimizes shuffle partitions at runtime.
     """
-    spark_session = SparkSession.builder \
-        .appName("PySparkTransformationTest") \
-        .master("local[*]") \
-        .config("spark.driver.memory", "2g") \
-        .config("spark.driver.maxResultSize", "1g") \
-        .config("spark.sql.shuffle.partitions", "4") \
-        .config("spark.sql.adaptive.enabled", "true") \
-        .getOrCreate()
+    spark_session = (SparkSession.builder
+        .appName("PySparkTransformationTest")
+        .master("local[*]")
+        .config("spark.driver.memory", "2g")
+        .config("spark.driver.maxResultSize", "1g")
+        .config("spark.sql.shuffle.partitions", "4")
+        .config("spark.sql.adaptive.enabled", "true")
+        .getOrCreate())
 
     yield spark_session
 
