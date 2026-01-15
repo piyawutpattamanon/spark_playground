@@ -15,8 +15,11 @@ def spark():
     """Create a SparkSession for the test module."""
     spark_session = SparkSession.builder \
         .appName("PySparkTransformationTest") \
-        .master("local[2]") \
-        .config("spark.sql.shuffle.partitions", "2") \
+        .master("local[*]") \
+        .config("spark.sql.shuffle.partitions", "4") \
+        .config("spark.driver.memory", "2g") \
+        .config("spark.driver.maxResultSize", "1g") \
+        .config("spark.sql.adaptive.enabled", "true") \
         .getOrCreate()
 
     yield spark_session
