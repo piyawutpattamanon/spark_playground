@@ -12,13 +12,25 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 
 @pytest.fixture(scope="module")
 def spark():
-    """Create a SparkSession for the test module."""
+    """Create a SparkSession for the test module.
+
+    This fixture is module-scoped, meaning a single Spark session is created
+    once and reused across all tests. This is more efficient than creating
+    a new session for each test.
+
+    Configuration notes:
+    - master("local[*]"): Uses all available CPU cores. Essential for CI/local testing.
+    - driver.memory (2g): Explicit heap limit prevents OOM surprises in CI environments.
+    - shuffle.partitions (4): Controls task parallelism during groupBy/join operations.
+    - maxResultSize (1g): CRITICAL - Prevents accidental .collect() on large results.
+    - adaptive.enabled: Spark automatically optimizes shuffle partitions at runtime.
+    """
     spark_session = SparkSession.builder \
         .appName("PySparkTransformationTest") \
         .master("local[*]") \
-        .config("spark.sql.shuffle.partitions", "4") \
         .config("spark.driver.memory", "2g") \
         .config("spark.driver.maxResultSize", "1g") \
+        .config("spark.sql.shuffle.partitions", "4") \
         .config("spark.sql.adaptive.enabled", "true") \
         .getOrCreate()
 
